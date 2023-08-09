@@ -1,4 +1,7 @@
+#include <wx/webrequest.h>
 #include <vector>
+#include <string>
+#include "json.hpp"
 #include "Frame.hpp"
 
 Frame::Frame(wxWindow* parent, const wxString& title)
@@ -9,6 +12,9 @@ Frame::Frame(wxWindow* parent, const wxString& title)
 
 void Frame::SetupForm()
 {
+  logger = new wxLogStderr();
+  wxLog::SetActiveTarget(logger);
+
   wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* centeringSizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -23,6 +29,44 @@ void Frame::SetupForm()
 
   wxButton* submitButton = new wxButton(panel, wxID_ANY, "Submit");
   submitButton->SetCursor(wxCursor(wxCURSOR_HAND));
+  submitButton->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event) {
+    wxWebRequest request = wxWebSession::GetDefault().CreateRequest(
+      this,
+      "https://dummyjson.com/products/add"
+    );
+    request.SetMethod("POST");
+
+    nlohmann::json data = nlohmann::json({{"title", "Pencil"}});
+    request.SetData("{\"title\": \"Pencil\"}", "application/json");
+
+    if (request.IsOk()) request.Start();
+    else wxLogWarning("Failed to create the request");
+  });
+
+  this->Bind(wxEVT_WEBREQUEST_STATE, [](wxWebRequestEvent& event) {
+    switch (event.GetState())
+    {
+      case wxWebRequest::State_Completed:
+      {
+        wxLogInfo("Get request executed successfully");
+
+        wxWebResponse response = event.GetResponse();
+        wxLogInfo(response.AsString());
+        // auto productsJson = nlohmann::json::parse(response.AsString());
+
+        // for (auto& obj: productsJson["products"])
+        // {
+        //   std::string title = obj["title"];
+        //   wxLogInfo("%s", title);
+        // }
+
+        break;
+      }
+      case wxWebRequest::State_Failed:
+        wxLogWarning("Get request failed");
+        break;
+    }
+  });
 
   std::vector<wxWindow*> formItems { emailLabel, emailField, passwordLabel, passwordField, submitButton };
 

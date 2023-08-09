@@ -13,6 +13,8 @@ public class AccountEntity {
     private String email;
     @Column(length = 100)
     private String password;
+    @Column(length = 10)
+    private String role;
 
     public AccountEntity() {
     }
@@ -55,6 +57,14 @@ public class AccountEntity {
         this.password = password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "AccountEntity{" +
@@ -62,6 +72,7 @@ public class AccountEntity {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }
