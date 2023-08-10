@@ -1,19 +1,23 @@
 #include <wx/webrequest.h>
 #include <vector>
+#include <iostream>
 #include <string>
 #include "json.hpp"
 #include "Frame.hpp"
+#include "LoginDialog.hpp"
 
 Frame::Frame(wxWindow* parent, const wxString& title)
   : wxFrame(parent, wxID_ANY, title)
 {
   SetupForm();
+
+  this->Centre();
 }
 
 void Frame::SetupForm()
 {
-  logger = new wxLogStderr();
-  wxLog::SetActiveTarget(logger);
+  // LoginDialog loginDialog(this, "Login");
+  // loginDialog.ShowModal();
 
   wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* centeringSizer = new wxBoxSizer(wxHORIZONTAL);
