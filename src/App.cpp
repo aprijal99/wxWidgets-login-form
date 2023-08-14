@@ -8,7 +8,7 @@ bool App::OnInit()
 {
   wxInitAllImageHandlers();
 
-  LoginDialog loginDialog(nullptr, "Login");
+  LoginDialog loginDialog(nullptr, "Welcome to Student Management Control");
   if (loginDialog.ShowModal() != wxID_OK)
   {
     loginDialog.Destroy();

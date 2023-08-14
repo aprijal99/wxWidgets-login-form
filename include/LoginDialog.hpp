@@ -8,6 +8,8 @@ public:
   LoginDialog(wxWindow* parent, const wxString& title);
 
 private:
+  wxTextCtrl* emailField, * passwordField;
+
   void OnClose(wxCloseEvent& event);
 
   wxDECLARE_EVENT_TABLE();
