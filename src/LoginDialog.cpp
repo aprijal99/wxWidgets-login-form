@@ -3,7 +3,31 @@
 LoginDialog::LoginDialog(wxWindow* parent, const wxString& title)
   : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize)
 {
-  // Login form layout
+  // Top panel
+  wxPanel* topPanel = SetupTopPanel();
+
+  // Button panel
+  wxPanel* buttonPanel = SetupButtonPanel();
+
+  // Border
+  wxPanel* borderPanel = new wxPanel(this, wxID_ANY);
+  borderPanel->SetBackgroundColour(wxColour("gray"));
+
+  // Main sizer
+  wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+  mainSizer->Add(topPanel, 1, wxEXPAND);
+  mainSizer->Add(borderPanel, 0, wxEXPAND);
+  mainSizer->Add(buttonPanel, 0, wxEXPAND);
+
+  // Set main sizer to LoginDialog
+  this->SetSizer(mainSizer);
+  this->SetIcon(wxIcon("logo.png", wxBITMAP_TYPE_PNG));
+  this->SetSize(wxSize(FromDIP(650), FromDIP(550)));
+  this->Centre();
+}
+
+wxPanel* LoginDialog::SetupTopPanel()
+{
   wxPanel* topPanel = new wxPanel(this, wxID_ANY);
   topPanel->SetBackgroundColour(wxColour("white"));
   wxBoxSizer* topPanelSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -29,7 +53,11 @@ LoginDialog::LoginDialog(wxWindow* parent, const wxString& title)
   topPanelSizer->Add(centeringSizer, 1, wxALIGN_CENTER);
   topPanel->SetSizerAndFit(topPanelSizer);
 
-  // Buttons layout
+  return topPanel;
+}
+
+wxPanel* LoginDialog::SetupButtonPanel()
+{
   wxPanel* buttonPanel = new wxPanel(this, wxID_ANY);
   wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -44,18 +72,7 @@ LoginDialog::LoginDialog(wxWindow* parent, const wxString& title)
   buttonSizer->Add(loginButton, 0, wxALL, FromDIP(10));
   buttonPanel->SetSizer(buttonSizer);
 
-  wxPanel* borderPanel = new wxPanel(this, wxID_ANY);
-  borderPanel->SetBackgroundColour(wxColour("gray"));
-
-  wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-  mainSizer->Add(topPanel, 1, wxEXPAND);
-  mainSizer->Add(borderPanel, 0, wxEXPAND);
-  mainSizer->Add(buttonPanel, 0, wxEXPAND);
-
-  this->SetSizer(mainSizer);
-  this->SetIcon(wxIcon("logo.png", wxBITMAP_TYPE_PNG));
-  this->SetSize(wxSize(FromDIP(650), FromDIP(550)));
-  this->Centre();
+  return buttonPanel;
 }
 
 void LoginDialog::OnClose(wxCloseEvent& event)

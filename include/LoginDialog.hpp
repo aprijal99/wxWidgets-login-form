@@ -10,7 +10,9 @@ public:
 private:
   wxTextCtrl* emailField, * passwordField;
 
-  void OnClose(wxCloseEvent& event);
+  wxPanel* SetupTopPanel();
+  wxPanel* SetupButtonPanel();
 
+  void OnClose(wxCloseEvent& event);
   wxDECLARE_EVENT_TABLE();
 };
