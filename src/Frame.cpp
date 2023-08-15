@@ -1,10 +1,4 @@
-#include <wx/webrequest.h>
-#include <vector>
-#include <iostream>
-#include <string>
-#include "json.hpp"
 #include "Frame.hpp"
-#include "LoginDialog.hpp"
 
 Frame::Frame(wxWindow* parent, const wxString& title)
   : wxFrame(parent, wxID_ANY, title)
@@ -39,8 +33,6 @@ void Frame::SetupForm()
   //     "https://dummyjson.com/products/add"
   //   );
   //   request.SetMethod("POST");
-
-  //   nlohmann::json data = nlohmann::json({{"title", "Pencil"}});
   //   request.SetData("{\"title\": \"Pencil\"}", "application/json");
 
   //   if (request.IsOk()) request.Start();

@@ -1,8 +1,12 @@
+#include <string>
 #include "LoginDialog.hpp"
+#include "json.hpp"
 
 LoginDialog::LoginDialog(wxWindow* parent, const wxString& title)
   : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize)
 {
+  this->Bind(wxEVT_WEBREQUEST_STATE, &LoginDialog::OnLoginResponse, this);
+
   // Top panel
   wxPanel* topPanel = SetupTopPanel();
 
@@ -64,8 +68,9 @@ wxPanel* LoginDialog::SetupButtonPanel()
   wxButton* registerButton = new wxButton(buttonPanel, wxID_ANY, "Register");
   registerButton->DisableFocusFromKeyboard();
   wxButton* loginButton = new wxButton(buttonPanel, wxID_ANY, "Login");
+  loginButton->Bind(wxEVT_BUTTON, &LoginDialog::OnClickLoginButton, this);
   loginButton->DisableFocusFromKeyboard();
-  loginButton->Disable();
+  // loginButton->Disable();
 
   buttonSizer->Add(registerButton, 0, wxALL, FromDIP(10));
   buttonSizer->AddStretchSpacer(1);
@@ -78,6 +83,49 @@ wxPanel* LoginDialog::SetupButtonPanel()
 void LoginDialog::OnClose(wxCloseEvent& event)
 {
   this->EndModal(wxID_CANCEL);
+}
+
+void LoginDialog::OnClickLoginButton(wxCommandEvent& event)
+{
+  wxString email = emailField->GetLineText(0);
+  email.Replace("@", "%40");
+  wxString password = passwordField->GetLineText(0);
+
+  wxString encodedEmailPassword = wxString("email=")
+    .Append(email)
+    .Append("&")
+    .Append("password=")
+    .Append(password);
+
+  wxWebRequest request = wxWebSession::GetDefault().CreateRequest(
+    this,
+    "http://localhost:8050/login"
+  );
+  request.SetMethod("POST");
+  request.SetData(encodedEmailPassword, "application/x-www-form-urlencoded");
+
+  if (request.IsOk()) request.Start();
+  else wxLogWarning("Failed to create the request");
+}
+
+void LoginDialog::OnLoginResponse(wxWebRequestEvent& event)
+{
+  switch (event.GetState())
+  {
+    case wxWebRequest::State_Completed:
+    {
+      wxWebResponse response = event.GetResponse();
+      auto responseJson = nlohmann::json::parse(response.AsString());
+      std::string token = responseJson["data"]["access_token"];
+
+      wxLogInfo("%s", token);
+
+      break;
+    }
+    case wxWebRequest::State_Failed:
+      wxLogWarning("Get request failed");
+      break;
+  }
 }
 
 BEGIN_EVENT_TABLE(LoginDialog, wxDialog)

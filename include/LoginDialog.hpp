@@ -1,6 +1,7 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/webrequest.h>
 
 class LoginDialog: public wxDialog
 {
@@ -14,5 +15,7 @@ private:
   wxPanel* SetupButtonPanel();
 
   void OnClose(wxCloseEvent& event);
+  void OnClickLoginButton(wxCommandEvent& event);
+  void OnLoginResponse(wxWebRequestEvent& event);
   wxDECLARE_EVENT_TABLE();
 };
