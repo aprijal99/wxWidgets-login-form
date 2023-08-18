@@ -1,6 +1,5 @@
 package org.ghiyas.company.backend.controller;
 
-import org.ghiyas.company.backend.dto.AccountDto;
 import org.ghiyas.company.backend.service.AccountService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

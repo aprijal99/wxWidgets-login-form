@@ -2,14 +2,17 @@
 
 #include <wx/wx.h>
 #include <wx/webrequest.h>
+#include "JwtUtil.hpp"
 
 class LoginDialog: public wxDialog
 {
 public:
   LoginDialog(wxWindow* parent, const wxString& title);
+  wxSecretValue GetSecretToken();
 
 private:
   wxTextCtrl* emailField, * passwordField;
+  wxSecretValue secretToken;
 
   wxPanel* SetupTopPanel();
   wxPanel* SetupButtonPanel();

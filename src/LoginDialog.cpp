@@ -116,16 +116,27 @@ void LoginDialog::OnLoginResponse(wxWebRequestEvent& event)
     {
       wxWebResponse response = event.GetResponse();
       auto responseJson = nlohmann::json::parse(response.AsString());
-      std::string token = responseJson["data"]["access_token"];
+      std::string jwtToken = responseJson["data"]["access_token"];
 
-      wxLogInfo("%s", token);
+      if (!JwtUtil::SaveToken("accessToken", wxString(jwtToken)))
+      {
+        wxLogWarning("Failed to store login session");
+      }
+
+      this->secretToken = wxSecretValue(wxString(jwtToken));
+      this->EndModal(wxID_OK);
 
       break;
     }
     case wxWebRequest::State_Failed:
-      wxLogWarning("Get request failed");
+      wxLogWarning("Incorrect email or password");
       break;
   }
+}
+
+wxSecretValue LoginDialog::GetSecretToken()
+{
+  return this->secretToken;
 }
 
 BEGIN_EVENT_TABLE(LoginDialog, wxDialog)
